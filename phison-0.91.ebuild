@@ -18,15 +18,14 @@ RDEPEND="${DEPEND}"
 BDEPEND=""
 
 CONFIG_CHECK="!CONFIG_ATA !CONFIG_PCI !CONFIG_MODULES !CONFIG_BLK_DEV !CONFIG_SCSI"
-MODULE_NAMES="phison(kernel/drivers/ata:${S})"
-BUILD_TARGETS="clean modules"
+#MODULE_NAMES="phison(kernel/drivers/ata:${S})"
+#MODULE_NAMES="phison(kernel/drivers/ata:)"
+MODULE_NAMES="phison(kernel/drivers/ata)"
+BUILD_TARGETS="modules"
 
-#src_prepare() {
-#	cd ${S}/${PN}-driver
-#	# Avoid "make jobserver unavailable" warning and -Werror problems
-#	sed -e 's:\tmake:\t+make:g' \
-#		-i Makefile || die "sed failed"
-#}
+pkg_setup() {
+	linux-mod_pkg_setup
+}
 
 src_configure() {
 	set_arch_to_kernel
@@ -34,11 +33,8 @@ src_configure() {
 
 src_compile() {
 	linux-mod_src_compile
-
 }
 
 src_install() {
-	default
 	linux-mod_src_install
-
 }
