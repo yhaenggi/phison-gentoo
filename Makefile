@@ -21,12 +21,25 @@ MODDESTDIR=$(KERNEL_MODULES)/kernel/$(MOD_SUBDIR)
 obj-m	:= $(patsubst %,%.o,$(DRIVER))
 obj-ko  := $(patsubst %,%.ko,$(DRIVER))
 
-.PHONY: all modules clean
+.PHONY: all modules modules_install install clean
 
 all: modules
 
 modules:
 	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) $@
+
+install: modules_install
+
+modules_install:
+	mkdir -p $(MODDESTDIR)
+	cp $(DRIVER).ko $(MODDESTDIR)/
+ifeq ($(COMPRESS_GZIP), y)
+	@gzip -f $(MODDESTDIR)/$(DRIVER).ko
+endif
+ifeq ($(COMPRESS_XZ), y)
+	@xz -f $(MODDESTDIR)/$(DRIVER).ko
+endif
+	depmod -a -F $(SYSTEM_MAP) $(TARGET)
 
 clean:
 	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) $@
