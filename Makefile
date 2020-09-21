@@ -23,7 +23,7 @@ obj-ko  := $(patsubst %,%.ko,$(DRIVER))
 
 .PHONY: all modules modules_install install clean
 
-all: modules
+all: | clean modules
 
 modules:
 	@$(MAKE) -C $(KERNEL_BUILD) M=$(CURDIR) $@
